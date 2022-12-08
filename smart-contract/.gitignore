@@ -1,0 +1,6 @@
+# files in gitignore
+
+hardhat.config.ts
+yarn.lock
+tsconfig.json
+cache/
