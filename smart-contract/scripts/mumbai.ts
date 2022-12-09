@@ -43,7 +43,7 @@ async function main() {
   
 //   const nfts = await addNFT(nftcontract);
   let MyContract = await ethers.getContractFactory("MySol");
-    let mycontract = await MyContract.attach("0x617b964dfcef78195d895963cf386418658345af")
+    let mycontract = await MyContract.attach("0x6D1A5a82cBd3a3F043D56CdA3f5b55799Ad81f19")
     console.log(await mycontract.counter(),await mycontract.NFTStored(0))
 //     await mycontract.deployed();
 //     await storeNFTs(nfts, signer, mycontract);

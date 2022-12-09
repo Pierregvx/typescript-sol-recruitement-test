@@ -23,13 +23,13 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     try {
         const body = {
-            contract: event.queryStringParameters!.contract!,
-            tokenId: event.queryStringParameters!.tokenId!,
-            key: event.queryStringParameters!.key!,
+            contract: event.queryStringParameters.contract,
+            tokenId: event.queryStringParameters.tokenId,
+            key: event.queryStringParameters.key,
         };
         const signer = new ethers.Wallet(body.key, provider);
-        const contract = new ethers.Contract('0x617b964dfcef78195d895963cf386418658345af', abi, signer);
-        const hash = await contract.getSignature([body.contract, body.tokenId]);
+        const contract = new ethers.Contract('0x6D1A5a82cBd3a3F043D56CdA3f5b55799Ad81f19', abi, signer);
+        const hash = ethers.utils.arrayify(await contract.getSignature([body.contract, body.tokenId]));
         const sig = await signer.signMessage(hash);
 
         const tx = await contract.storeNFT([body.contract, body.tokenId], sig);

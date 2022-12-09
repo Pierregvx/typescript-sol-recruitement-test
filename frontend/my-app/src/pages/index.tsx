@@ -1,8 +1,8 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 
-import { Account } from '../components'
-import { MintNFTForm } from './All'
+import { Account, GetNFTInfo } from '../components'
+
 
 function Page() {
   const { isConnected } = useAccount()
@@ -14,7 +14,7 @@ function Page() {
       {isConnected && <Account />
       
       }
-      <MintNFTForm/>
+      <GetNFTInfo/>
 
     </>
   )
