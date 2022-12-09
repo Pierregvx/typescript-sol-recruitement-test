@@ -2,20 +2,20 @@
 pragma solidity ^0.8.9;
 import "./Test.sol";
 import "hardhat/console.sol";
+
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 contract MySol is Test {
     mapping(uint256 => NFT) public NFTStored;
-    mapping (address => mapping(uint256 => uint256)) public nftToId;
-    mapping (uint256=>uint256) public deposits;
-    event NFTStoredEvent(NFT nft,address signaturesigner,address signer);
-    uint256 public counter = 0;
+    mapping(address => mapping(uint256 => uint256)) public nftToId;
+    mapping(uint256 => uint256) public deposits;
+    event NFTStoredEvent(NFT nft, address signaturesigner, address signer);
+    uint256 public counter = 1;
 
-    function extractAddress(bytes32 _hash, bytes memory _signature)
-        internal
-        pure
-        returns (address)
-    {
+    function extractAddress(
+        bytes32 _hash,
+        bytes memory _signature
+    ) internal pure returns (address) {
         bytes32 r;
         bytes32 s;
         uint8 v;
@@ -58,38 +58,35 @@ contract MySol is Test {
 
     function _storeNFT(NFT calldata _nft) internal {
         NFTStored[counter] = _nft;
-        
     }
 
     function getSignature(NFT calldata nft) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(address(nft.ctr), nft.tokenId));
-
     }
 
-    function storeNFT(NFT calldata nft, bytes calldata signature)
-        external
-        returns (bool signerIsOwner)
-    {
-        
+    function storeNFT(
+        NFT calldata nft,
+        bytes calldata signature
+    ) external returns (bool signerIsOwner) {
         bytes32 hash = getSignature(nft);
         address signer = extractAddress(hash, signature);
         address nftowner = nft.ctr.ownerOf(nft.tokenId);
-        console.log("signer", signer,"signer",msg.sender);
-        console.log("nftowner",nftowner);
-        emit NFTStoredEvent(nft,signer,nftowner);
-        if (signer == nftowner) {
-            _storeNFT(nft);
-            counter++;
-            return true;
-        } else {
-            return false;
-        }
+        console.log("signer", signer, "signer", msg.sender);
+        console.log("nftowner", nftowner);
+        emit NFTStoredEvent(nft, signer, nftowner);
 
+        require(
+            nftToId[address(nft.ctr)][nft.tokenId] == 0,
+            "NFT already stored"
+        );
+        require(signer == nftowner, "signer is not the owner of the NFT");
+        _storeNFT(nft);
+        counter++;
+        return true;
     }
 
     function deposit(NFT calldata nft) external payable {
         uint256 id = nftToId[address(nft.ctr)][nft.tokenId];
         deposits[id] += msg.value;
     }
-    
 }

@@ -16,7 +16,6 @@ async function deployNFT() {
 }
 async function main() {
   const signer = (await ethers.getSigners())[0]
-  console.log(signer.address,await signer.getBalance())
   const nft = await deployNFT();
   let mycontract = await deploy("MySol", []);
   
